@@ -9,7 +9,7 @@ Etapas Concluidas (possuem um ✔️️ após o nome):
 
 03- Lançar um Cartão de Ponto ✔️️
 
-04- Lançar um Resultado Venda
+04- Lançar um Resultado Venda ✔️️
 
 05- Lançar uma taxa de serviço
 
