@@ -16,6 +16,7 @@ public class Empregado
         tipo = novoTipo;
         salario = novoSalario;
         comissao = novaComissao;
+        id = novoId;
         pertencenteAoSindicato = false;
         metodoDePagamento = 1;//Por padrão todos recebem um cheque pelo correio
         taxaSindical = 0.0;

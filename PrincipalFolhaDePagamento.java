@@ -13,7 +13,7 @@ public class PrincipalFolhaDePagamento
         Scanner ler = new Scanner(System.in);
         Random gerador = new Random();
         Empregado novoFuncionario = new Empregado("","",0,0.0,0.0,0);
-        boolean sair = false;
+        boolean sair = false,apagado;
         int opcao, lendoInt;
         double lendoDouble;
         String lendoString;
@@ -78,17 +78,23 @@ public class PrincipalFolhaDePagamento
                             //InsiraAqui Incluir opcão de saida sem apagar
                             sair = true;
                         }while(sair != true);
+                        apagado=false;
                         for(int i = 0; i<quantidadeEmpregados; i++)
                         {
                             if(listaDeEmpregados[i].id == lendoInt)
                             {
                                 //InsiraAqui Alterações para Redo/Undo
                                 listaDeEmpregados[i].id = -1;//Remoção Lógica
+                                apagado=true;
+                                quantidadeEmpregados--;
+                                System.out.println(" O funcionario foi removido"
+                                        + " com sucesso!\n");
                             }
                         }
-                        quantidadeEmpregados--;
-                        System.out.println(" O funcionario foi removido com "
-                                + "sucesso!\n");
+                        if(!apagado)
+                        {
+                            System.out.println("O Funcionario não foi encontrado!");
+                        }
                     }else
                     {
                         System.out.println("Não foi possivel realizar essa "
