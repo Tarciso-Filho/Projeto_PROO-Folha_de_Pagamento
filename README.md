@@ -3,9 +3,9 @@ O objetivo do projeto é construir um sistema de folha de pagamento. O sistema c
 
 Etapas Concluidas (possuem um ✔️️ após o nome):
 
-01- Adição de um empregado
+01- Adição de um empregado ✔️️
 
-02- Remoção de um empregado
+02- Remoção de um empregado ✔️️
 
 03- Lançar um Cartão de Ponto
 
