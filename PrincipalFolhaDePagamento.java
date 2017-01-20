@@ -5,9 +5,14 @@ public class PrincipalFolhaDePagamento
 {
     public static void main(String[] args)
     {
+        Empregado[] listaDeEmpregados = new Empregado[1000];
+        int quantidadeEmpregados = 0;
+        
         // MENU
         Scanner ler = new Scanner(System.in);
-        int opcao;
+        boolean sair = false;
+        int opcao, lendoInt;
+        double lendoDouble;
         
         System.out.println("Folha de Pagamento - TARCISO FILHO");
         
@@ -33,7 +38,32 @@ public class PrincipalFolhaDePagamento
                     
                 break;
                 case 2:
-                    
+                    if( quantidadeEmpregados > 0 )
+                    {
+                        do
+                        {
+                            sair = false;
+                            System.out.println("Digite o ID do Funcionario:");
+                            lendoInt = ler.nextInt();
+                            //InsiraAqui Caso o id esteja errado ou não existe
+                            //InsiraAqui Incluir opcão de saida sem apagar
+                            sair = true;
+                        }while(sair != false);
+                        for(int i = 0; i<quantidadeEmpregados; i++)
+                        {
+                            if(listaDeEmpregados[i].id == lendoInt)
+                            {
+                                //InsiraAqui Alterações para Redo/Undo
+                                listaDeEmpregados[i].id = -1;//Remoção Lógica
+                            }
+                        }
+                        System.out.println(" O funcionario foi removido com "
+                                + "sucesso!\n");
+                    }else
+                    {
+                        System.out.println("Não foi possivel realizar essa "
+                                + "opção, pois não existe funcionarios!");
+                    }
                 break;
                 case 3:
                     
