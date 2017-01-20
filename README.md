@@ -7,7 +7,7 @@ Etapas Concluidas (possuem um ✔️️ após o nome):
 
 02- Remoção de um empregado ✔️️
 
-03- Lançar um Cartão de Ponto
+03- Lançar um Cartão de Ponto ✔️️
 
 04- Lançar um Resultado Venda
 
