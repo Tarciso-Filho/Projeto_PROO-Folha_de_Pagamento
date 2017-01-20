@@ -14,7 +14,8 @@ public class PrincipalFolhaDePagamento
         Random gerador = new Random();
         Empregado novoFuncionario = new Empregado("","",0,0.0,0.0,0);
         boolean sair = false,apagado;
-        int opcao, lendoInt;
+        int opcao, identificador, horaEntrada, minutosEntrada, horaSaida;
+        int minutosSaida, horasTrabalhadas, lendoInt;
         double lendoDouble;
         String lendoString;
         
@@ -53,13 +54,14 @@ public class PrincipalFolhaDePagamento
                     System.out.println("Digite o salário do funcionário:\n"
                             + "(Se horista, o valor da hora trabalhada\n"
                             + " Se assalariado ou comissionado, o valor mensal)");
+                    System.out.print("R$ ");
                     lendoDouble = ler.nextDouble();
-                    novoFuncionario.salario = lendoDouble;
+                    novoFuncionario.salarioBruto = lendoDouble;
                     novoFuncionario.comissao = 0.0;
                     novoFuncionario.id = idLivre;
                     listaDeEmpregados[(idLivre-1)] = new Empregado
         (novoFuncionario.nome, novoFuncionario.endereco, novoFuncionario.tipo, 
-                            novoFuncionario.salario, novoFuncionario.comissao, 
+                            novoFuncionario.salarioBruto, novoFuncionario.comissao, 
                             novoFuncionario.id);
                     idLivre++;
                     quantidadeEmpregados++;
@@ -102,7 +104,43 @@ public class PrincipalFolhaDePagamento
                     }
                 break;
                 case 3:
-                    
+                    System.out.println("Informe o ID do funcionario horista:");
+                    identificador = ler.nextInt();
+                    sair=false;
+                    for(int i = 0; i<quantidadeEmpregados && !sair; i++)
+                    {
+                        if(listaDeEmpregados[i].id == identificador)
+                        {
+                            System.out.println("Informe o horario de entrada:");
+                            horaEntrada=ler.nextInt();
+                            ler.nextByte();
+                            minutosEntrada=ler.nextInt();
+                            //ler.nextLine();
+                            System.out.println("Informe o horario de saída:");
+                            horaSaida=ler.nextInt();
+                            ler.nextByte();
+                            minutosSaida=ler.nextInt();
+                            horasTrabalhadas = horaSaida - horaEntrada;
+                            if(minutosEntrada > minutosSaida)
+                            {
+                                horasTrabalhadas--;
+                            }
+                            if(horasTrabalhadas <= 8)
+                            {
+                                listaDeEmpregados[i].salarioLiquido += (listaDeEmpregados[i].salarioBruto * horasTrabalhadas);
+                            }else
+                            {
+                                listaDeEmpregados[i].salarioLiquido = listaDeEmpregados[i].salarioLiquido + (listaDeEmpregados[i].salarioBruto * 8);
+                                listaDeEmpregados[i].salarioLiquido = listaDeEmpregados[i].salarioLiquido + (horasTrabalhadas - 8.0) * listaDeEmpregados[i].salarioBruto * 1.5;
+                            }
+                            System.out.println("O Cartão foi batido com sucesso!");
+                            sair = true;
+                        }
+                    }
+                    if( sair == false )
+                    {
+                        System.out.println("O Empregado não foi encontrado");
+                    }
                 break;
                 case 4:
                     

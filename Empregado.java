@@ -6,7 +6,7 @@ public class Empregado
     public boolean pertencenteAoSindicato;
     public int id, tipo, metodoDePagamento, idSindicato;
     public String nome, endereco;
-    public double salario, comissao, taxaSindical;
+    public double salarioBruto, comissao, taxaSindical, salarioLiquido;
     
     public Empregado( String novoNome, String novoEndereco, int novoTipo, 
             double novoSalario, double novaComissao, int novoId)
@@ -14,11 +14,12 @@ public class Empregado
         nome = novoNome;
         endereco = novoEndereco;
         tipo = novoTipo;
-        salario = novoSalario;
+        salarioBruto = novoSalario;
         comissao = novaComissao;
         id = novoId;
         pertencenteAoSindicato = false;
         metodoDePagamento = 1;//Por padrão todos recebem um cheque pelo correio
         taxaSindical = 0.0;
+        salarioLiquido = 0.0;
     }
 }
