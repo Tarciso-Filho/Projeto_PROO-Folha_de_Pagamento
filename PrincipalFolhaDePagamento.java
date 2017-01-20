@@ -1,6 +1,6 @@
 package folhadepagamento;
 import java.util.Scanner;
-import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 
 public class PrincipalFolhaDePagamento
 {
@@ -16,7 +16,7 @@ public class PrincipalFolhaDePagamento
         int opcao, identificador, horaEntrada, minutosEntrada, horaSaida;
         int minutosSaida, horasTrabalhadas, lendoInt;
         double lendoDouble, valor, porcentagem;
-        String lendoString;
+        String lendoString, horaString;
         
         System.out.println("Folha de Pagamento - TARCISO FILHO");
         
@@ -105,20 +105,30 @@ public class PrincipalFolhaDePagamento
                 case 3:
                     System.out.println("Informe o ID do funcionario horista:");
                     identificador = ler.nextInt();
+                    ler.nextLine();
                     sair=false;
                     for(int i = 0; i<quantidadeEmpregados && !sair; i++)
                     {
                         if(listaDeEmpregados[i].id == identificador)
                         {
                             System.out.println("Informe o horario de entrada:");
-                            horaEntrada=ler.nextInt();
+                            horaString = ler.nextLine();
+                            horaEntrada = (int) ( horaString.charAt(0) - '0') 
+                                    * 10 + (int) ( horaString.charAt(1) - '0');
+                            minutosEntrada = (int) ( horaString.charAt(3) - '0') 
+                                    * 10 + (int) ( horaString.charAt(4) - '0');
+                            /*horaEntrada=ler.nextInt();
                             ler.nextByte();
-                            minutosEntrada=ler.nextInt();
-                            //ler.nextLine();
+                            minutosEntrada=ler.nextInt();*/
                             System.out.println("Informe o horario de saída:");
-                            horaSaida=ler.nextInt();
+                            horaString = ler.nextLine();
+                            horaSaida = (int) ( horaString.charAt(0) - '0') 
+                                    * 10 + (int) ( horaString.charAt(1) - '0');
+                            minutosSaida = (int) ( horaString.charAt(3) - '0') 
+                                    * 10 + (int) ( horaString.charAt(4) - '0');
+                            /*horaSaida=ler.nextInt();
                             ler.nextByte();
-                            minutosSaida=ler.nextInt();
+                            minutosSaida=ler.nextInt();*/
                             horasTrabalhadas = horaSaida - horaEntrada;
                             if(minutosEntrada > minutosSaida)
                             {
