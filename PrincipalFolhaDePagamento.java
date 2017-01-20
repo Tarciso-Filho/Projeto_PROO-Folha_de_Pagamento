@@ -1,18 +1,22 @@
 package folhadepagamento;
 import java.util.Scanner;
+import java.util.Random;
 
 public class PrincipalFolhaDePagamento
 {
     public static void main(String[] args)
     {
         Empregado[] listaDeEmpregados = new Empregado[1000];
-        int quantidadeEmpregados = 0;
+        int quantidadeEmpregados = 0, idLivre = 1;
         
         // MENU
         Scanner ler = new Scanner(System.in);
+        Random gerador = new Random();
+        Empregado novoFuncionario = new Empregado("","",0,0.0,0.0,0);
         boolean sair = false;
         int opcao, lendoInt;
         double lendoDouble;
+        String lendoString;
         
         System.out.println("Folha de Pagamento - TARCISO FILHO");
         
@@ -31,11 +35,36 @@ public class PrincipalFolhaDePagamento
             System.out.println("10-Para criar uma nova agenda de pagamento;");
             System.out.println("0-Para Sair\n");
             opcao=ler.nextInt();
+            ler.nextLine();
             
             switch(opcao)
             {
                 case 1:
-                    
+                    System.out.println("Digite o nome completo do funcionário:");
+                    lendoString = ler.nextLine();
+                    novoFuncionario.nome = lendoString;
+                    System.out.println("Digite o endereço do funcionário:");
+                    lendoString = ler.nextLine();
+                    novoFuncionario.endereco = lendoString;
+                    System.out.println("Escolha o tipo do funcionário:\n"
+                            + "1-Horista\n2-Assalariado\n3-Comissionado");
+                    lendoInt = ler.nextInt();
+                    novoFuncionario.tipo = lendoInt;
+                    System.out.println("Digite o salário do funcionário:\n"
+                            + "(Se horista, o valor da hora trabalhada\n"
+                            + " Se assalariado ou comissionado, o valor mensal)");
+                    lendoDouble = ler.nextDouble();
+                    novoFuncionario.salario = lendoDouble;
+                    novoFuncionario.comissao = 0.0;
+                    novoFuncionario.id = idLivre;
+                    listaDeEmpregados[(idLivre-1)] = new Empregado
+        (novoFuncionario.nome, novoFuncionario.endereco, novoFuncionario.tipo, 
+                            novoFuncionario.salario, novoFuncionario.comissao, 
+                            novoFuncionario.id);
+                    idLivre++;
+                    quantidadeEmpregados++;
+                    System.out.println("O funcionario do ID " +(idLivre-1)
+                            + " foi cadastrado com sucesso!\n");
                 break;
                 case 2:
                     if( quantidadeEmpregados > 0 )
@@ -48,7 +77,7 @@ public class PrincipalFolhaDePagamento
                             //InsiraAqui Caso o id esteja errado ou não existe
                             //InsiraAqui Incluir opcão de saida sem apagar
                             sair = true;
-                        }while(sair != false);
+                        }while(sair != true);
                         for(int i = 0; i<quantidadeEmpregados; i++)
                         {
                             if(listaDeEmpregados[i].id == lendoInt)
@@ -57,6 +86,7 @@ public class PrincipalFolhaDePagamento
                                 listaDeEmpregados[i].id = -1;//Remoção Lógica
                             }
                         }
+                        quantidadeEmpregados--;
                         System.out.println(" O funcionario foi removido com "
                                 + "sucesso!\n");
                     }else
