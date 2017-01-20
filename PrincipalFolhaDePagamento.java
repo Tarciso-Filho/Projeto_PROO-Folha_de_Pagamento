@@ -1,6 +1,6 @@
 package folhadepagamento;
 import java.util.Scanner;
-import java.util.Random;
+import java.text.SimpleDateFormat;
 
 public class PrincipalFolhaDePagamento
 {
@@ -11,12 +11,11 @@ public class PrincipalFolhaDePagamento
         
         // MENU
         Scanner ler = new Scanner(System.in);
-        Random gerador = new Random();
         Empregado novoFuncionario = new Empregado("","",0,0.0,0.0,0);
-        boolean sair = false,apagado;
+        boolean sair,apagado;
         int opcao, identificador, horaEntrada, minutosEntrada, horaSaida;
         int minutosSaida, horasTrabalhadas, lendoInt;
-        double lendoDouble;
+        double lendoDouble, valor, porcentagem;
         String lendoString;
         
         System.out.println("Folha de Pagamento - TARCISO FILHO");
@@ -143,7 +142,28 @@ public class PrincipalFolhaDePagamento
                     }
                 break;
                 case 4:
-                    
+                    System.out.println("Informe o ID do funcionario comissionado:");
+                    identificador = ler.nextInt();
+                    sair = false;
+                    for(int i = 0; i<quantidadeEmpregados && !sair; i++)
+                    {
+                        if(listaDeEmpregados[i].id == identificador)
+                        {
+                            System.out.println("Informe o valor da venda:");
+                            valor = ler.nextDouble();
+                            System.out.println("Informe a porcentagem da "
+                                    + "comissão:");
+                            porcentagem = ler.nextDouble();
+                            listaDeEmpregados[i].comissao += valor / 100 * porcentagem;
+                            sair = true;
+                            System.out.println("A comissão de R$ "
+                                    +(valor / 100 * porcentagem)+ "foi registrada!");
+                        }
+                    }
+                    if( sair == false )
+                    {
+                        System.out.println("O Empregado não foi encontrado!");
+                    }
                 break;
                 case 5:
                     
