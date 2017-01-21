@@ -11,9 +11,9 @@ Etapas Concluidas (possuem um ✔️️ após o nome):
 
 04- Lançar um Resultado Venda  ✔️️
 
-05- Lançar uma taxa de serviço
+05- Lançar uma taxa de serviço  ✔️️
 
-06- Alterar detalhes de um empregado 
+06- Alterar detalhes de um empregado  ✔️️
 
 07- Rodar a folha de pagamento para hoje 
 
