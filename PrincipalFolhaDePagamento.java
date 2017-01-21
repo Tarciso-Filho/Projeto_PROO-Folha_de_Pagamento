@@ -1,6 +1,5 @@
 package folhadepagamento;
 import java.util.Scanner;
-//import java.text.SimpleDateFormat;
 
 public class PrincipalFolhaDePagamento
 {
@@ -12,7 +11,7 @@ public class PrincipalFolhaDePagamento
         // MENU
         Scanner ler = new Scanner(System.in);
         Empregado novoFuncionario = new Empregado("","",0,0.0,0.0,0);
-        boolean sair,apagado;
+        boolean sair,estado;
         int opcao, identificador, horaEntrada, minutosEntrada, horaSaida;
         int minutosSaida, horasTrabalhadas, lendoInt;
         double lendoDouble, valor, porcentagem;
@@ -79,20 +78,20 @@ public class PrincipalFolhaDePagamento
                             //InsiraAqui Incluir opcão de saida sem apagar
                             sair = true;
                         }while(sair != true);
-                        apagado=false;
+                        sair=false;
                         for(int i = 0; i<quantidadeEmpregados; i++)
                         {
                             if(listaDeEmpregados[i].id == lendoInt)
                             {
                                 //InsiraAqui Alterações para Redo/Undo
                                 listaDeEmpregados[i].id = -1;//Remoção Lógica
-                                apagado=true;
+                                sair=true;
                                 quantidadeEmpregados--;
                                 System.out.println(" O funcionario foi removido"
                                         + " com sucesso!\n");
                             }
                         }
-                        if(!apagado)
+                        if(!sair)
                         {
                             System.out.println("O Funcionario não foi encontrado!");
                         }
@@ -146,9 +145,9 @@ public class PrincipalFolhaDePagamento
                             sair = true;
                         }
                     }
-                    if( sair == false )
+                    if( !sair )
                     {
-                        System.out.println("O Empregado não foi encontrado");
+                        System.out.println("O Empregado não foi encontrado!");
                     }
                 break;
                 case 4:
@@ -160,6 +159,7 @@ public class PrincipalFolhaDePagamento
                         if(listaDeEmpregados[i].id == identificador)
                         {
                             System.out.println("Informe o valor da venda:");
+                            System.out.print("R$ ");
                             valor = ler.nextDouble();
                             System.out.println("Informe a porcentagem da "
                                     + "comissão:");
@@ -167,19 +167,106 @@ public class PrincipalFolhaDePagamento
                             listaDeEmpregados[i].comissao += valor / 100 * porcentagem;
                             sair = true;
                             System.out.println("A comissão de R$ "
-                                    +(valor / 100 * porcentagem)+ "foi registrada!");
+                                    +(valor / 100 * porcentagem)
+                                    + " foi registrada!");
                         }
                     }
-                    if( sair == false )
+                    if( !sair )
                     {
                         System.out.println("O Empregado não foi encontrado!");
                     }
                 break;
                 case 5:
-                    
+                    System.out.println("Informe o ID do funcionario:");
+                    identificador = ler.nextInt();
+                    sair = false;
+                    for(int i = 0; i<quantidadeEmpregados && !sair; i++)
+                    {
+                        if(listaDeEmpregados[i].id == identificador)
+                        {
+                            System.out.println("Informe a taxa de serviço:");
+                            System.out.print("R$ ");
+                            lendoDouble = ler.nextDouble();
+                            listaDeEmpregados[i].taxaSindicalExtra += lendoDouble;
+                            sair = true;
+                            System.out.println("A taxa de serviço de R$ "
+                                    +lendoDouble+ " foi registrada!");
+                        }
+                    }
+                    if( !sair )
+                    {
+                        System.out.println("O Empregado não foi encontrado!");
+                    }
                 break;
                 case 6:
-                    
+                    System.out.println("Informe o ID do funcionario:");
+                    identificador = ler.nextInt();
+                    sair = false;
+                    for(int i = 0; i<quantidadeEmpregados && !sair; i++)
+                    {
+                        if(listaDeEmpregados[i].id == identificador)
+                        {
+                            System.out.println("Substituir o nome completo do "
+                                    + "funcionário: " + listaDeEmpregados[i].nome);
+                            lendoString = ler.nextLine();
+                            listaDeEmpregados[i].nome = lendoString;
+                            System.out.println("Substituir o endereço do "
+                                    + "funcionário: " 
+                                    + listaDeEmpregados[i].endereco);
+                            lendoString = ler.nextLine();
+                            listaDeEmpregados[i].endereco = lendoString;
+                            System.out.println("Substitua o tipo do funcionário:"
+                                    + "\n1-Horista\n2-Assalariado"
+                                    + "\n3-Comissionado\nTipo Atual:" 
+                                    + listaDeEmpregados[i].tipo );
+                            lendoInt = ler.nextInt();
+                            listaDeEmpregados[i].tipo = lendoInt;
+                            System.out.println("Substitua o salário do funcionário:\n"
+                            + "(Se horista, o valor da hora trabalhada\n"
+                            + " Se assalariado ou comissionado, o valor mensal)"
+                                    + "\nValor Atual: R$ " 
+                                    + listaDeEmpregados[i].salarioBruto );
+                            System.out.print("R$ ");
+                            lendoDouble = ler.nextDouble();
+                            novoFuncionario.salarioBruto = lendoDouble;
+                            System.out.println("Substitua o valor da comissão "
+                                    + "do funcionário:");
+                            System.out.print("Valor Atual: R$ " 
+                                    + listaDeEmpregados[i].comissao + "\nR$ ");
+                            lendoDouble = ler.nextDouble();
+                            listaDeEmpregados[i].comissao = lendoDouble;
+                            System.out.println("Substitua o estado de "
+                                    + "associação ao sindicato: (S/N)");
+                            lendoString = ler.nextLine();
+                            estado = false;
+                            if(lendoString.charAt(0) == 'S')
+                            {
+                                System.out.println("Informe o ID perante ao "
+                                        + "sindicato:");
+                                lendoInt = ler.nextInt();
+                                listaDeEmpregados[i].idSindicato = lendoInt;
+                                System.out.println("Informe a taxa sindical:");
+                                lendoDouble = ler.nextDouble();
+                                listaDeEmpregados[i].taxaSindical = lendoDouble;
+                                estado = true;
+                            }
+                            listaDeEmpregados[i].pertencenteAoSindicato = estado;
+                            System.out.println("Substitua o método de pagamento"
+                                    + " do funcionário:\n1-Cheque pelos correios"
+                                    + "\n2-Cheque em mãos\n3-Depósito em conta "
+                                    + "bancária\nMétodo Atual:" 
+                                    + listaDeEmpregados[i].metodoDePagamento );
+                            lendoInt = ler.nextInt();
+                            listaDeEmpregados[i].metodoDePagamento = lendoInt;
+                            sair = true;
+                            System.out.println("O funcionário foi editado com "
+                                    + "sucesso!");
+                        }
+                    }
+                    if( !sair )
+                    {
+                        System.out.println("O Empregado não foi encontrado!");
+                    }
                 break;
                 case 7:
                     
