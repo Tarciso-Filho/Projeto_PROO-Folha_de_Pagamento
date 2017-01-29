@@ -3,6 +3,33 @@ import java.util.Scanner;
 
 public class PrincipalFolhaDePagamento
 {
+    public static void imprimirEmpregado( Empregado info )
+    {
+        System.out.println("\nEMPREGADO #" + info.id);
+        System.out.println("Nome: " + info.nome);
+        System.out.println("Endereço: " + info.endereco);
+        System.out.println("Tipo: " + info.tipo + "\n 1-Horista\n 2-Assalariado"
+                + "\n 3-Comissionado");
+        System.out.println("Salário: R$" + info.salarioBruto);
+        System.out.println("Valor Comissões: R$ " + info.comissao);
+        System.out.printf("Pertence a um Sindicato: ");
+        if(info.pertencenteAoSindicato)
+        {
+            System.out.println("SIM");
+            System.out.println("ID no Sindicato: #" + info.idSindicato);
+            System.out.println("Taxa Sindical: R$ " + info.taxaSindical);
+            System.out.println("Taxa Sindical Extra: R$ " 
+                    + info.taxaSindicalExtra);
+        }else
+        {
+            System.out.println("NÃO");
+        }
+        System.out.println("Método de Pagamento: " + info.metodoDePagamento 
+                + "\n 1-Cheque pelos correios\n 2-Cheque em mãos"
+                        + "\n 3-Depósito em conta bancária");
+        System.out.println();
+    }
+    
     public static void main(String[] args)
     {
         Empregado[] listaDeEmpregados = new Empregado[1000];
@@ -13,7 +40,7 @@ public class PrincipalFolhaDePagamento
         Empregado novoFuncionario = new Empregado("","",0,0.0,0.0,0);
         boolean sair,estado;
         int opcao, identificador, horaEntrada, minutosEntrada, horaSaida;
-        int minutosSaida, horasTrabalhadas, lendoInt;
+        int minutosSaida, horasTrabalhadas, lendoInt, quantidadeRecebedores;
         double lendoDouble, valor, porcentagem;
         String lendoString, horaString;
         
@@ -65,6 +92,7 @@ public class PrincipalFolhaDePagamento
                     quantidadeEmpregados++;
                     System.out.println("O funcionario do ID " +(idLivre-1)
                             + " foi cadastrado com sucesso!\n");
+                    imprimirEmpregado(listaDeEmpregados[idLivre-2]);
                 break;
                 case 2:
                     if( quantidadeEmpregados > 0 )
@@ -116,18 +144,12 @@ public class PrincipalFolhaDePagamento
                                     * 10 + (int) ( horaString.charAt(1) - '0');
                             minutosEntrada = (int) ( horaString.charAt(3) - '0') 
                                     * 10 + (int) ( horaString.charAt(4) - '0');
-                            /*horaEntrada=ler.nextInt();
-                            ler.nextByte();
-                            minutosEntrada=ler.nextInt();*/
                             System.out.println("Informe o horario de saída:");
                             horaString = ler.nextLine();
                             horaSaida = (int) ( horaString.charAt(0) - '0') 
                                     * 10 + (int) ( horaString.charAt(1) - '0');
                             minutosSaida = (int) ( horaString.charAt(3) - '0') 
                                     * 10 + (int) ( horaString.charAt(4) - '0');
-                            /*horaSaida=ler.nextInt();
-                            ler.nextByte();
-                            minutosSaida=ler.nextInt();*/
                             horasTrabalhadas = horaSaida - horaEntrada;
                             if(minutosEntrada > minutosSaida)
                             {
@@ -135,11 +157,16 @@ public class PrincipalFolhaDePagamento
                             }
                             if(horasTrabalhadas <= 8)
                             {
-                                listaDeEmpregados[i].salarioLiquido += (listaDeEmpregados[i].salarioBruto * horasTrabalhadas);
+                                listaDeEmpregados[i].salarioLiquido += 
+                                        (listaDeEmpregados[i].salarioBruto 
+                                        * horasTrabalhadas);
                             }else
                             {
-                                listaDeEmpregados[i].salarioLiquido = listaDeEmpregados[i].salarioLiquido + (listaDeEmpregados[i].salarioBruto * 8);
-                                listaDeEmpregados[i].salarioLiquido = listaDeEmpregados[i].salarioLiquido + (horasTrabalhadas - 8.0) * listaDeEmpregados[i].salarioBruto * 1.5;
+                                listaDeEmpregados[i].salarioLiquido += 
+                                        (listaDeEmpregados[i].salarioBruto * 8);
+                                listaDeEmpregados[i].salarioLiquido += 
+                                        (horasTrabalhadas - 8.0) * 
+                                        listaDeEmpregados[i].salarioBruto * 1.5;
                             }
                             System.out.println("O Cartão foi batido com sucesso!");
                             sair = true;
@@ -220,6 +247,17 @@ public class PrincipalFolhaDePagamento
                                     + "\n3-Comissionado\nTipo Atual:" 
                                     + listaDeEmpregados[i].tipo );
                             lendoInt = ler.nextInt();
+                            switch(lendoInt)
+                            {
+                                case 1:
+                                    listaDeEmpregados[i].diasAtePagamento = 6;
+                                break;
+                                case 2:
+                                    listaDeEmpregados[i].diasAtePagamento = 29;
+                                break;
+                                case 3:
+                                    listaDeEmpregados[i].diasAtePagamento = 13;
+                            }
                             listaDeEmpregados[i].tipo = lendoInt;
                             System.out.println("Substitua o salário do funcionário:\n"
                             + "(Se horista, o valor da hora trabalhada\n"
@@ -269,7 +307,28 @@ public class PrincipalFolhaDePagamento
                     }
                 break;
                 case 7:
-                    
+                    if( quantidadeEmpregados > 0 )
+                    {
+                        quantidadeRecebedores = 0;
+                        for(int i = 0; i<quantidadeEmpregados; i++)
+                        {
+                            if( listaDeEmpregados[i].diasAtePagamento > 1 )
+                            {
+                                listaDeEmpregados[i].diasAtePagamento--;
+                            }else
+                            {
+                                quantidadeRecebedores++;
+                                switch(listaDeEmpregados[i].tipo)
+                                {
+                                    
+                                }
+                            }
+                        }
+                    }else
+                    {
+                        System.out.println("Não foi possivel realizar essa "
+                                + "opção, pois não existe funcionarios!");
+                    }
                 break;
                 case 8:
                     
