@@ -37,10 +37,10 @@ public class PrincipalFolhaDePagamento
         
         // MENU
         Scanner ler = new Scanner(System.in);
-        Empregado novoFuncionario = new Empregado("","",0,0.0,0.0,0);
-        boolean sair,estado;
+        Empregado novoFuncionario = new Empregado("","",0,0.0,0.0,1,1,1900,0);
+        boolean sair, estado;
         int opcao, identificador, horaEntrada, minutosEntrada, horaSaida;
-        int minutosSaida, horasTrabalhadas, lendoInt, quantidadeRecebedores;
+        int minutosSaida, horasTrabalhadas, lendoInt, diaP, mesP, anoP;
         double lendoDouble, valor, porcentagem;
         String lendoString, horaString;
         
@@ -86,8 +86,8 @@ public class PrincipalFolhaDePagamento
                     novoFuncionario.id = idLivre;
                     listaDeEmpregados[(idLivre-1)] = new Empregado
         (novoFuncionario.nome, novoFuncionario.endereco, novoFuncionario.tipo, 
-                            novoFuncionario.salarioBruto, novoFuncionario.comissao, 
-                            novoFuncionario.id);
+                novoFuncionario.salarioBruto, novoFuncionario.comissao, diaP, 
+                mesP, anoP, novoFuncionario.id);
                     idLivre++;
                     quantidadeEmpregados++;
                     System.out.println("O funcionario do ID " +(idLivre-1)
@@ -247,7 +247,7 @@ public class PrincipalFolhaDePagamento
                                     + "\n3-Comissionado\nTipo Atual:" 
                                     + listaDeEmpregados[i].tipo );
                             lendoInt = ler.nextInt();
-                            switch(lendoInt)
+                            /*switch(lendoInt)
                             {
                                 case 1:
                                     listaDeEmpregados[i].diasAtePagamento = 6;
@@ -257,7 +257,7 @@ public class PrincipalFolhaDePagamento
                                 break;
                                 case 3:
                                     listaDeEmpregados[i].diasAtePagamento = 13;
-                            }
+                            }*/
                             listaDeEmpregados[i].tipo = lendoInt;
                             System.out.println("Substitua o salário do funcionário:\n"
                             + "(Se horista, o valor da hora trabalhada\n"
@@ -309,7 +309,7 @@ public class PrincipalFolhaDePagamento
                 case 7:
                     if( quantidadeEmpregados > 0 )
                     {
-                        quantidadeRecebedores = 0;
+                        /*quantidadeRecebedores = 0;
                         for(int i = 0; i<quantidadeEmpregados; i++)
                         {
                             if( listaDeEmpregados[i].diasAtePagamento > 1 )
@@ -323,7 +323,7 @@ public class PrincipalFolhaDePagamento
                                     
                                 }
                             }
-                        }
+                        }*/
                     }else
                     {
                         System.out.println("Não foi possivel realizar essa "

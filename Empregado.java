@@ -1,16 +1,21 @@
-
 package folhadepagamento;
+
+import java.util.Date;
+import java.util.Calendar;
+import java.text.DateFormat;
 
 public class Empregado
 {
     public boolean pertencenteAoSindicato;
-    public int id, tipo, metodoDePagamento, idSindicato, diasAtePagamento;
+    public int id, tipo, metodoDePagamento, idSindicato;
+    public Calendar proximoPagamento;
     public String nome, endereco;
     public double salarioBruto, comissao, taxaSindical, taxaSindicalExtra;
     public double salarioLiquido;
     
     public Empregado( String novoNome, String novoEndereco, int novoTipo, 
-            double novoSalario, double novaComissao, int novoId)
+            double novoSalario, double novaComissao, int novoDia, int novoMes,
+            int novoAno, int novoId)
     {
         nome = novoNome;
         endereco = novoEndereco;
@@ -18,6 +23,8 @@ public class Empregado
         salarioBruto = novoSalario;
         comissao = novaComissao;
         id = novoId;
+        proximoPagamento = Calendar.getInstance();
+        proximoPagamento.set(novoDia, novoMes, novoAno);
         /*switch(novoId)
         {
             case 1:
