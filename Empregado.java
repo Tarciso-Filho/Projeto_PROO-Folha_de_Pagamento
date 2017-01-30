@@ -23,9 +23,12 @@ public class Empregado
         salarioBruto = novoSalario;
         comissao = novaComissao;
         id = novoId;
-        proximoPagamento = Calendar.getInstance();
-        proximoPagamento.set(novoDia, novoMes, novoAno);
-        /*switch(novoId)
+        this.proximoPagamento = Calendar.getInstance();
+        this.proximoPagamento.set(novoAno, novoMes, novoDia);
+        /*System.out.println(this.proximoPagamento.get(Calendar.DAY_OF_MONTH) + "/" 
+                + (this.proximoPagamento.get(Calendar.MONTH)+1) + "/" 
+                + this.proximoPagamento.get(Calendar.YEAR) + " " + this.proximoPagamento.get(Calendar.DAY_OF_WEEK));
+        switch(novoId)
         {
             case 1:
                 diasAtePagamento = 6;
