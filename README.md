@@ -15,10 +15,10 @@ Etapas Concluidas (possuem um ✔️️ após o nome):
 
 06- Alterar detalhes de um empregado  ✔️️
 
-07- Rodar a folha de pagamento para hoje 
+07- Rodar a folha de pagamento para hoje ✔️️
 
-08- Undo/redo 
+08- Undo/redo ✔️️
 
-09- Agenda de Pagamento
+09- Agenda de Pagamento ✔️️
 
 10- Criação de Novas Agendas de Pagamento 
