@@ -48,7 +48,7 @@ public class PrincipalFolhaDePagamento
         Calendar dataCursor;
         boolean sair, estado, algoFoiDesfeito = false;
         int opcao, identificador, horaEntrada, minutosEntrada, horaSaida;
-        int minutosSaida, horasTrabalhadas, lendoInt, diaP, mesP, anoP;
+        int minutosSaida, horasTrabalhadas, lendoInt, quantidadeRecebedores;
         int idAnterior = -1;
         double lendoDouble, valor, porcentagem;
         String lendoString, horaString;
@@ -86,8 +86,8 @@ public class PrincipalFolhaDePagamento
                     lendoInt = ler.nextInt();
                     dataCursor = Calendar.getInstance();
                     System.out.println(dataCursor.get(Calendar.DAY_OF_MONTH) + "/" 
-                + (dataCursor.get(Calendar.MONTH)+1) + "/" 
-                + dataCursor.get(Calendar.YEAR) + " " + dataCursor.get(Calendar.DAY_OF_WEEK));
+                        + (dataCursor.get(Calendar.MONTH)+1) + "/" 
+                        + dataCursor.get(Calendar.YEAR) + " " + dataCursor.get(Calendar.DAY_OF_WEEK));
                     switch(lendoInt)
                     {
                         case 1:
@@ -101,9 +101,7 @@ public class PrincipalFolhaDePagamento
                             dataCursor.set(Calendar.DAY_OF_MONTH, 1);
                             dataCursor.add(Calendar.MONTH, 1);
                             dataCursor.add(Calendar.DAY_OF_MONTH, -1);
-                            System.out.println(dataCursor.get(Calendar.DAY_OF_MONTH) + "/" 
-                + (dataCursor.get(Calendar.MONTH)+1) + "/" 
-                + dataCursor.get(Calendar.YEAR) + " " + dataCursor.get(Calendar.DAY_OF_WEEK));
+                            
                         break;
                         case 3:
                             identificador = 0;
@@ -123,14 +121,14 @@ public class PrincipalFolhaDePagamento
                             
                     }
                     System.out.println(dataCursor.get(Calendar.DAY_OF_MONTH) + "/" 
-                + (dataCursor.get(Calendar.MONTH)+1) + "/" 
-                + dataCursor.get(Calendar.YEAR) + " " + dataCursor.get(Calendar.DAY_OF_WEEK));
+                        + (dataCursor.get(Calendar.MONTH)+1) + "/" 
+                        + dataCursor.get(Calendar.YEAR) + " " + dataCursor.get(Calendar.DAY_OF_WEEK));
                     novoFuncionario.proximoPagamento.set(dataCursor.get
-        (Calendar.YEAR), (dataCursor.get(Calendar.MONTH)), 
-        dataCursor.get(Calendar.DAY_OF_MONTH));
+                        (Calendar.YEAR), (dataCursor.get(Calendar.MONTH)), 
+                        dataCursor.get(Calendar.DAY_OF_MONTH));
                     /*System.out.println(novoFuncionario.proximoPagamento.get(Calendar.DAY_OF_MONTH) + "/" 
-                + (novoFuncionario.proximoPagamento.get(Calendar.MONTH)+1) + "/" 
-                + novoFuncionario.proximoPagamento.get(Calendar.YEAR) + " " + novoFuncionario.proximoPagamento.get(Calendar.DAY_OF_WEEK));*/
+                        + (novoFuncionario.proximoPagamento.get(Calendar.MONTH)+1) + "/" 
+                        + novoFuncionario.proximoPagamento.get(Calendar.YEAR) + " " + novoFuncionario.proximoPagamento.get(Calendar.DAY_OF_WEEK));*/
                     novoFuncionario.tipo = lendoInt;
                     System.out.println("Digite o salário do funcionário:\n"
                             + "(Se horista, o valor da hora trabalhada\n"
@@ -142,12 +140,12 @@ public class PrincipalFolhaDePagamento
                     novoFuncionario.id = idLivre;
                     idAnterior = idLivre-1;
                     listaDeEmpregados[(idLivre-1)] = new Empregado
-        (novoFuncionario.nome, novoFuncionario.endereco, novoFuncionario.tipo, 
-                novoFuncionario.salarioBruto, novoFuncionario.comissao, 
-                novoFuncionario.proximoPagamento.get(Calendar.DAY_OF_MONTH), 
-                novoFuncionario.proximoPagamento.get(Calendar.MONTH), 
-                novoFuncionario.proximoPagamento.get(Calendar.YEAR), 
-                novoFuncionario.id);
+                        (novoFuncionario.nome, novoFuncionario.endereco, novoFuncionario.tipo, 
+                        novoFuncionario.salarioBruto, novoFuncionario.comissao, 
+                        novoFuncionario.proximoPagamento.get(Calendar.DAY_OF_MONTH), 
+                        novoFuncionario.proximoPagamento.get(Calendar.MONTH), 
+                        novoFuncionario.proximoPagamento.get(Calendar.YEAR), 
+                        novoFuncionario.id);
                     anterior.id = -1;
                     idLivre++;
                     quantidadeEmpregados++;
@@ -487,8 +485,62 @@ public class PrincipalFolhaDePagamento
                     }
                 break;
                 case 7:
+                    dataCursor = Calendar.getInstance();
+                    quantidadeRecebedores = 0;
                     if( quantidadeEmpregados > 0 )
                     {
+                        for(int i = 0; i<quantidadeEmpregados; i++)
+                        {
+                            if(dataCursor.get(Calendar.DAY_OF_MONTH)==listaDeEmpregados[i].proximoPagamento.get(Calendar.DAY_OF_MONTH) 
+                                    && dataCursor.get(Calendar.MONTH)==listaDeEmpregados[i].proximoPagamento.get(Calendar.MONTH) 
+                                    && dataCursor.get(Calendar.YEAR)==listaDeEmpregados[i].proximoPagamento.get(Calendar.YEAR))
+                            {
+                                if(listaDeEmpregados[i].tipo == 2)
+                                {
+                                    listaDeEmpregados[i].salarioLiquido += listaDeEmpregados[i].salarioBruto;
+                                }if(listaDeEmpregados[i].tipo == 3)
+                                {
+                                    listaDeEmpregados[i].salarioLiquido += 
+                                            (listaDeEmpregados[i].salarioBruto/2) + listaDeEmpregados[i].comissao;
+                                }
+                                listaDeEmpregados[i].salarioLiquido -= (listaDeEmpregados[i].taxaSindical + listaDeEmpregados[i].taxaSindicalExtra);
+                                System.out.println("Ao Funcionario " + listaDeEmpregados[i].nome + ", deve ser pago R$ " + listaDeEmpregados[i].salarioLiquido);
+                                quantidadeRecebedores++;
+                                listaDeEmpregados[i].salarioLiquido = 0.0;
+                                switch(listaDeEmpregados[i].tipo)
+                                {
+                                    case 1:
+                                        while(dataCursor.get(Calendar.DAY_OF_WEEK)!=Calendar.FRIDAY)
+                                        {
+                                            dataCursor.add(Calendar.DAY_OF_MONTH, 1);
+                                
+                                        }
+                                    break;
+                                    case 2:
+                                        dataCursor.set(Calendar.DAY_OF_MONTH, 1);
+                                        dataCursor.add(Calendar.MONTH, 1);
+                                        dataCursor.add(Calendar.DAY_OF_MONTH, -1);
+                            
+                                    break;
+                                    case 3:
+                                        identificador = 0;
+                                        while(identificador<=1)
+                                        {
+                                            if(dataCursor.get(Calendar.DAY_OF_WEEK)==Calendar.FRIDAY)
+                                            {
+                                                identificador++;
+                                            }
+                                            if(identificador<=1)
+                                            {
+                                                dataCursor.add(Calendar.DAY_OF_MONTH, 1);
+                                            }
+                                        }
+                                    break;
+                                    default:
+                            
+                                }
+                            }
+                        }
                         /*quantidadeRecebedores = 0;
                         for(int i = 0; i<quantidadeEmpregados; i++)
                         {
@@ -509,6 +561,7 @@ public class PrincipalFolhaDePagamento
                         System.out.println("Não foi possivel realizar essa "
                                 + "opção, pois não existe funcionarios!");
                     }
+                    System.out.println("Devem ser pagos " + quantidadeRecebedores + "funcionario(s).");
                 break;
                 case 8:
                     if( quantidadeEmpregados > 0 )
@@ -558,6 +611,7 @@ public class PrincipalFolhaDePagamento
                             listaDeEmpregados[idAnterior].tipo=anterior.tipo;
                             //Fim do Undo
                             System.out.println("A ultima ação executada foi desfeita");
+                            algoFoiDesfeito = true;
                         }else
                         {
                             //InsiraAqui Modificações para Redo
@@ -580,6 +634,7 @@ public class PrincipalFolhaDePagamento
                             listaDeEmpregados[idAnterior].tipo=posterior.tipo;
                             //Fim do Redo
                             System.out.println("A ultima ação executada foi refeita");
+                            algoFoiDesfeito = false;
                         }
                     }else
                     {
@@ -590,7 +645,17 @@ public class PrincipalFolhaDePagamento
                     
                 break;
                 case 9:
-                    
+                    if( quantidadeEmpregados > 0 )
+                    {
+                        for(int i = 0; i<quantidadeEmpregados; i++)
+                        {
+                            imprimirEmpregado(listaDeEmpregados[i]);
+                        }
+                    }else
+                    {
+                        System.out.println("Não foi possivel realizar essa "
+                                + "opção, pois não existe funcionarios!");
+                    }
                 break;
                 case 10:
                     
