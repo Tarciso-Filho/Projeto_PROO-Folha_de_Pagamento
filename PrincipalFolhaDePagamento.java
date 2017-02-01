@@ -596,18 +596,23 @@ public class PrincipalFolhaDePagamento
                                 + (int) ( lendoString.charAt(8) - '0') * 10 
                                 + (int) ( lendoString.charAt(9) - '0'), 
                                 (int) ( lendoString.charAt(3) - '0') * 10 
-                                        + (int) ( lendoString.charAt(4) - '0'), 
+                                        + (int) ( lendoString.charAt(4) - '1'), 
                                 (int) ( lendoString.charAt(0) - '0') * 10 
                                         + (int) ( lendoString.charAt(1) - '0'));
-                        
+                        System.out.println(dataCursor.get(Calendar.DAY_OF_MONTH) + "/" 
+                        + (dataCursor.get(Calendar.MONTH)+1) + "/" 
+                        + dataCursor.get(Calendar.YEAR) + " " + dataCursor.get(Calendar.DAY_OF_WEEK));
                         for(int i = 0; i<quantidadeEmpregados; i++)
                         {
                             if(dataCursor.get(Calendar.DAY_OF_MONTH)==listaDeEmpregados[i].proximoPagamento.get(Calendar.DAY_OF_MONTH) 
                                     && dataCursor.get(Calendar.MONTH)==listaDeEmpregados[i].proximoPagamento.get(Calendar.MONTH) 
                                     && dataCursor.get(Calendar.YEAR)==listaDeEmpregados[i].proximoPagamento.get(Calendar.YEAR))
                             {
+                                
                                 //InsiraAqui Alterações para Redo/Undo
+                                anteriores[quantidadeRecebedores] = new Empregado("","",0,0.0,0.0,1,1,1900,0);
                                 idsAnteriores[quantidadeRecebedores] = i;
+                                anteriores[quantidadeRecebedores].agendaPagamento=listaDeEmpregados[i].agendaPagamento;
                                 anteriores[quantidadeRecebedores].comissao=listaDeEmpregados[i].comissao;
                                 anteriores[quantidadeRecebedores].endereco=listaDeEmpregados[i].endereco;
                                 anteriores[quantidadeRecebedores].id=listaDeEmpregados[i].id;
@@ -630,6 +635,7 @@ public class PrincipalFolhaDePagamento
                                         listaDeEmpregados[i].taxaSindicalExtra;
                                 anteriores[quantidadeRecebedores].tipo=listaDeEmpregados[i].tipo;
                                 undoSimples = false;
+                                //imprimirEmpregado(anteriores[quantidadeRecebedores]);
                                 //Fim da copia para Redo/Undo
                                 if(listaDeEmpregados[i].tipo == 2)
                                 {
@@ -640,7 +646,7 @@ public class PrincipalFolhaDePagamento
                                             (listaDeEmpregados[i].salarioBruto/2) + listaDeEmpregados[i].comissao;
                                 }
                                 listaDeEmpregados[i].salarioLiquido -= (listaDeEmpregados[i].taxaSindical + listaDeEmpregados[i].taxaSindicalExtra);
-                                System.out.println("Ao Funcionario " + listaDeEmpregados[i].nome + ", deve ser pago R$ " + listaDeEmpregados[i].salarioLiquido);
+                                System.out.printf("\nAo Funcionario %s, deve ser pago R$ %.2f\n", listaDeEmpregados[i].nome, listaDeEmpregados[i].salarioLiquido);
                                 quantidadeRecebedores++;
                                 listaDeEmpregados[i].salarioLiquido = 0.0;
                                 listaDeEmpregados[i].taxaSindicalExtra = 0.0;
@@ -669,7 +675,7 @@ public class PrincipalFolhaDePagamento
                         System.out.println("Não foi possivel realizar essa "
                                 + "opção, pois não existe funcionarios!");
                     }
-                    System.out.println("Deve(m) ser pago(s) " + quantidadeRecebedores + " funcionario(s).");
+                    System.out.println("Deve(m) ser pago(s) " + quantidadeRecebedores + " funcionario(s).\n");
                 break;
                 case 8:
                     if( quantidadeEmpregados > 0 )
@@ -679,6 +685,7 @@ public class PrincipalFolhaDePagamento
                             if(undoSimples)
                             {
                                 //InsiraAqui Alterações para Redo
+                                posterior.agendaPagamento=listaDeEmpregados[idAnterior].agendaPagamento;
                                 posterior.comissao=listaDeEmpregados[idAnterior].comissao;
                                 posterior.endereco=listaDeEmpregados[idAnterior].endereco;
                                 posterior.id=listaDeEmpregados[idAnterior].id;
@@ -702,6 +709,7 @@ public class PrincipalFolhaDePagamento
                                 posterior.tipo=listaDeEmpregados[idAnterior].tipo;
                                 //Fim da copia para Redo
                                 //InsiraAqui Modificações para Undo
+                                listaDeEmpregados[idAnterior].agendaPagamento=anterior.agendaPagamento;
                                 listaDeEmpregados[idAnterior].comissao=anterior.comissao;
                                 listaDeEmpregados[idAnterior].endereco=anterior.endereco;
                                 listaDeEmpregados[idAnterior].id=anterior.id;
@@ -725,6 +733,7 @@ public class PrincipalFolhaDePagamento
                                 for( int i = 0; i < quantidadeRecebedores; i++ )
                                 {
                                     //InsiraAqui Modificações para Undo
+                                    listaDeEmpregados[idsAnteriores[i]].agendaPagamento=anteriores[i].agendaPagamento;
                                     listaDeEmpregados[idsAnteriores[i]].comissao=anteriores[i].comissao;
                                     listaDeEmpregados[idsAnteriores[i]].endereco=anteriores[i].endereco;
                                     listaDeEmpregados[idsAnteriores[i]].id=anteriores[i].id;
@@ -747,6 +756,8 @@ public class PrincipalFolhaDePagamento
                                 for( int i = 0; i < quantidadeRecebedores; i++ )
                                 {
                                     //InsiraAqui Alterações para Redo
+                                    //System.out.println(i);
+                                    //System.out.println(anteriores[i].agendaPagamento);
                                     anteriores[i].salarioLiquido = 0.0;
                                     anteriores[i].taxaSindicalExtra = 0.0;
                                     anteriores[i].comissao = 0.0;
@@ -761,6 +772,7 @@ public class PrincipalFolhaDePagamento
                             if(undoSimples)
                             {
                                 //InsiraAqui Modificações para Redo
+                                listaDeEmpregados[idAnterior].agendaPagamento=posterior.agendaPagamento;
                                 listaDeEmpregados[idAnterior].comissao=posterior.comissao;
                                 listaDeEmpregados[idAnterior].endereco=posterior.endereco;
                                 listaDeEmpregados[idAnterior].id=posterior.id;
