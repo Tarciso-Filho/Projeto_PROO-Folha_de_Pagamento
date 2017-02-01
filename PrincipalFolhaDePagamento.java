@@ -11,16 +11,25 @@ public class PrincipalFolhaDePagamento
         System.out.println("Endereço: " + info.endereco);
         System.out.println("Tipo: " + info.tipo + "\n 1-Horista\n 2-Assalariado"
                 + "\n 3-Comissionado");
-        System.out.println("Salário: R$" + info.salarioBruto);
-        System.out.println("Valor Comissões: R$ " + info.comissao);
+        System.out.println("Agenda de Pagamento: " + info.agendaPagamento );
+        System.out.printf("Salário");
+        if(info.tipo == 1)
+        {
+            System.out.printf(" por hora");
+        }else
+        {
+            System.out.printf(" por mês");
+        }
+        System.out.printf(": R$ %.2f\n", info.salarioBruto);
+        System.out.printf("Valor Acumulado de Comissões: R$ %.2f\n", info.comissao);
         System.out.printf("Pertence a um Sindicato: ");
         if(info.pertencenteAoSindicato)
         {
             System.out.println("SIM");
             System.out.println("ID no Sindicato: #" + info.idSindicato);
-            System.out.println("Taxa Sindical: R$ " + info.taxaSindical);
-            System.out.println("Taxa Sindical Extra: R$ " 
-                    + info.taxaSindicalExtra);
+            System.out.printf("Taxa Sindical Mensal: R$ %.2f\n", info.taxaSindical);
+            System.out.printf("Taxa Sindical Extra: R$ %.2f\n", 
+                    info.taxaSindicalExtra);
         }else
         {
             System.out.println("NÃO");
@@ -35,6 +44,69 @@ public class PrincipalFolhaDePagamento
         System.out.println();
     }
     
+    public static void calcularProximoPagamento( Empregado recebedor )
+    {
+        String agenda = recebedor.agendaPagamento;
+        Scanner separador = new Scanner(agenda);
+        int dia, semana, identificador;
+        
+        if( separador.next().equals("mensal") )
+        {
+            recebedor.proximoPagamento.set(Calendar.DAY_OF_MONTH, 1);
+            recebedor.proximoPagamento.add(Calendar.MONTH, 1);
+            if( separador.hasNextInt() )
+            {
+                dia = separador.nextInt(4);
+            }else
+            {
+                dia = 0;
+                //System.out.println(scanner.next());
+            }
+            recebedor.proximoPagamento.add(Calendar.DAY_OF_MONTH, (dia-1));
+        }else
+        {
+            semana = separador.nextInt(4);
+            switch( separador.next() )
+            {
+                case "domingo":
+                    dia = Calendar.SUNDAY;
+                break;
+                case "segunda":
+                    dia = Calendar.MONDAY;
+                break;
+                case "terça":
+                    dia = Calendar.TUESDAY;
+                break;
+                case "quarta":
+                    dia = Calendar.WEDNESDAY;
+                break;
+                case "quinta":
+                    dia = Calendar.THURSDAY;
+                break;
+                case "sexta":
+                    dia = Calendar.FRIDAY;
+                break;
+                case "sabado":
+                    dia = Calendar.SATURDAY;
+                break;
+                default:
+                    dia = -1;
+            }
+            identificador = 0;
+            while(identificador<=(semana-1))
+            {
+                if(recebedor.proximoPagamento.get(Calendar.DAY_OF_WEEK)==dia)
+                {
+                    identificador++;
+                }
+                if(identificador<=(semana-1))
+                {
+                    recebedor.proximoPagamento.add(Calendar.DAY_OF_MONTH, 1);
+                }
+            }
+        }
+    }
+    
     public static void main(String[] args)
     {
         Empregado[] listaDeEmpregados = new Empregado[1000];
@@ -45,11 +117,13 @@ public class PrincipalFolhaDePagamento
         Empregado novoFuncionario = new Empregado("","",0,0.0,0.0,1,1,1900,0);
         Empregado anterior = new Empregado("","",0,0.0,0.0,1,1,1900,0);
         Empregado posterior = new Empregado("","",0,0.0,0.0,1,1,1900,0);
+        Empregado[] anteriores = new Empregado[100]; 
         Calendar dataCursor;
-        boolean sair, estado, algoFoiDesfeito = false;
+        boolean sair, estado, algoFoiDesfeito = false, undoSimples = true;
         int opcao, identificador, horaEntrada, minutosEntrada, horaSaida;
-        int minutosSaida, horasTrabalhadas, lendoInt, quantidadeRecebedores;
+        int minutosSaida, horasTrabalhadas, lendoInt, quantidadeRecebedores=0;
         int idAnterior = -1;
+        int[] idsAnteriores = new int[10];
         double lendoDouble, valor, porcentagem;
         String lendoString, horaString;
         
@@ -147,6 +221,7 @@ public class PrincipalFolhaDePagamento
                         novoFuncionario.proximoPagamento.get(Calendar.YEAR), 
                         novoFuncionario.id);
                     anterior.id = -1;
+                    undoSimples = true;
                     idLivre++;
                     quantidadeEmpregados++;
                     System.out.println("O funcionario do ID " +(idLivre-1)
@@ -193,6 +268,7 @@ public class PrincipalFolhaDePagamento
                                 anterior.taxaSindicalExtra=
                                         listaDeEmpregados[i].taxaSindicalExtra;
                                 anterior.tipo=listaDeEmpregados[i].tipo;
+                                undoSimples = true;
                                 //Fim da copia para Redo/Undo
                                 listaDeEmpregados[i].id = -1;//Remoção Lógica
                                 sair=true;
@@ -243,6 +319,7 @@ public class PrincipalFolhaDePagamento
                             anterior.taxaSindicalExtra=
                                         listaDeEmpregados[i].taxaSindicalExtra;
                             anterior.tipo=listaDeEmpregados[i].tipo;
+                            undoSimples = true;
                             //Fim da copia para Redo/Undo
                             System.out.println("Informe o horario de entrada:");
                             horaString = ler.nextLine();
@@ -314,6 +391,7 @@ public class PrincipalFolhaDePagamento
                             anterior.taxaSindicalExtra=
                                         listaDeEmpregados[i].taxaSindicalExtra;
                             anterior.tipo=listaDeEmpregados[i].tipo;
+                            undoSimples = true;
                             //Fim da copia para Redo/Undo
                             System.out.println("Informe o valor da venda:");
                             System.out.print("R$ ");
@@ -364,6 +442,7 @@ public class PrincipalFolhaDePagamento
                             anterior.taxaSindicalExtra=
                                         listaDeEmpregados[i].taxaSindicalExtra;
                             anterior.tipo=listaDeEmpregados[i].tipo;
+                            undoSimples = true;
                             //Fim da copia para Redo/Undo
                             System.out.println("Informe a taxa de serviço:");
                             System.out.print("R$ ");
@@ -410,6 +489,7 @@ public class PrincipalFolhaDePagamento
                             anterior.taxaSindicalExtra=
                                         listaDeEmpregados[i].taxaSindicalExtra;
                             anterior.tipo=listaDeEmpregados[i].tipo;
+                            undoSimples = true;
                             //Fim da copia para Redo/Undo
                             System.out.println("Substituir o nome completo do "
                                     + "funcionário: " + listaDeEmpregados[i].nome);
@@ -489,12 +569,48 @@ public class PrincipalFolhaDePagamento
                     quantidadeRecebedores = 0;
                     if( quantidadeEmpregados > 0 )
                     {
+                        System.out.println("Digite a data de pagamento: (01/01/1900)");
+                        lendoString = ler.nextLine();
+                        dataCursor.set((int) ( lendoString.charAt(6) - '0') * 1000 
+                                + (int) ( lendoString.charAt(7) - '0') * 100 
+                                + (int) ( lendoString.charAt(8) - '0') * 10 
+                                + (int) ( lendoString.charAt(9) - '0'), 
+                                (int) ( lendoString.charAt(3) - '0') * 10 
+                                        + (int) ( lendoString.charAt(4) - '0'), 
+                                (int) ( lendoString.charAt(0) - '0') * 10 
+                                        + (int) ( lendoString.charAt(1) - '0'));
+                        
                         for(int i = 0; i<quantidadeEmpregados; i++)
                         {
                             if(dataCursor.get(Calendar.DAY_OF_MONTH)==listaDeEmpregados[i].proximoPagamento.get(Calendar.DAY_OF_MONTH) 
                                     && dataCursor.get(Calendar.MONTH)==listaDeEmpregados[i].proximoPagamento.get(Calendar.MONTH) 
                                     && dataCursor.get(Calendar.YEAR)==listaDeEmpregados[i].proximoPagamento.get(Calendar.YEAR))
                             {
+                                //InsiraAqui Alterações para Redo/Undo
+                                idsAnteriores[quantidadeRecebedores] = i;
+                                anteriores[quantidadeRecebedores].comissao=listaDeEmpregados[i].comissao;
+                                anteriores[quantidadeRecebedores].endereco=listaDeEmpregados[i].endereco;
+                                anteriores[quantidadeRecebedores].id=listaDeEmpregados[i].id;
+                                anteriores[quantidadeRecebedores].idSindicato=
+                                        listaDeEmpregados[i].idSindicato;
+                                anteriores[quantidadeRecebedores].metodoDePagamento=
+                                        listaDeEmpregados[i].metodoDePagamento;
+                                anteriores[quantidadeRecebedores].nome=listaDeEmpregados[i].nome;
+                                anteriores[quantidadeRecebedores].pertencenteAoSindicato=
+                                        listaDeEmpregados[i].pertencenteAoSindicato;
+                                anteriores[quantidadeRecebedores].proximoPagamento=
+                                        listaDeEmpregados[i].proximoPagamento;
+                                anteriores[quantidadeRecebedores].salarioBruto=
+                                        listaDeEmpregados[i].salarioBruto;
+                                anteriores[quantidadeRecebedores].salarioLiquido=
+                                        listaDeEmpregados[i].salarioLiquido;
+                                anteriores[quantidadeRecebedores].taxaSindical=
+                                        listaDeEmpregados[i].taxaSindical;
+                                anteriores[quantidadeRecebedores].taxaSindicalExtra=
+                                        listaDeEmpregados[i].taxaSindicalExtra;
+                                anteriores[quantidadeRecebedores].tipo=listaDeEmpregados[i].tipo;
+                                undoSimples = false;
+                                //Fim da copia para Redo/Undo
                                 if(listaDeEmpregados[i].tipo == 2)
                                 {
                                     listaDeEmpregados[i].salarioLiquido += listaDeEmpregados[i].salarioBruto;
@@ -507,40 +623,12 @@ public class PrincipalFolhaDePagamento
                                 System.out.println("Ao Funcionario " + listaDeEmpregados[i].nome + ", deve ser pago R$ " + listaDeEmpregados[i].salarioLiquido);
                                 quantidadeRecebedores++;
                                 listaDeEmpregados[i].salarioLiquido = 0.0;
-                                switch(listaDeEmpregados[i].tipo)
-                                {
-                                    case 1:
-                                        while(dataCursor.get(Calendar.DAY_OF_WEEK)!=Calendar.FRIDAY)
-                                        {
-                                            dataCursor.add(Calendar.DAY_OF_MONTH, 1);
-                                
-                                        }
-                                    break;
-                                    case 2:
-                                        dataCursor.set(Calendar.DAY_OF_MONTH, 1);
-                                        dataCursor.add(Calendar.MONTH, 1);
-                                        dataCursor.add(Calendar.DAY_OF_MONTH, -1);
-                            
-                                    break;
-                                    case 3:
-                                        identificador = 0;
-                                        while(identificador<=1)
-                                        {
-                                            if(dataCursor.get(Calendar.DAY_OF_WEEK)==Calendar.FRIDAY)
-                                            {
-                                                identificador++;
-                                            }
-                                            if(identificador<=1)
-                                            {
-                                                dataCursor.add(Calendar.DAY_OF_MONTH, 1);
-                                            }
-                                        }
-                                    break;
-                                    default:
-                            
-                                }
+                                listaDeEmpregados[i].taxaSindicalExtra = 0.0;
+                                listaDeEmpregados[i].comissao = 0.0;
+                                calcularProximoPagamento(listaDeEmpregados[i]);
                             }
                         }
+                        
                         /*quantidadeRecebedores = 0;
                         for(int i = 0; i<quantidadeEmpregados; i++)
                         {
@@ -568,71 +656,124 @@ public class PrincipalFolhaDePagamento
                     {
                         if(!algoFoiDesfeito)
                         {
-                            //InsiraAqui Alterações para Redo
-                            posterior.comissao=listaDeEmpregados[idAnterior].comissao;
-                            posterior.endereco=listaDeEmpregados[idAnterior].endereco;
-                            posterior.id=listaDeEmpregados[idAnterior].id;
-                            posterior.idSindicato=
+                            if(undoSimples)
+                            {
+                                //InsiraAqui Alterações para Redo
+                                posterior.comissao=listaDeEmpregados[idAnterior].comissao;
+                                posterior.endereco=listaDeEmpregados[idAnterior].endereco;
+                                posterior.id=listaDeEmpregados[idAnterior].id;
+                                posterior.idSindicato=
                                         listaDeEmpregados[idAnterior].idSindicato;
-                            posterior.metodoDePagamento=
+                                posterior.metodoDePagamento=
                                         listaDeEmpregados[idAnterior].metodoDePagamento;
-                            posterior.nome=listaDeEmpregados[idAnterior].nome;
-                            posterior.pertencenteAoSindicato=
+                                posterior.nome=listaDeEmpregados[idAnterior].nome;
+                                posterior.pertencenteAoSindicato=
                                         listaDeEmpregados[idAnterior].pertencenteAoSindicato;
-                            posterior.proximoPagamento=
+                                posterior.proximoPagamento=
                                         listaDeEmpregados[idAnterior].proximoPagamento;
-                            posterior.salarioBruto=
+                                posterior.salarioBruto=
                                         listaDeEmpregados[idAnterior].salarioBruto;
-                            posterior.salarioLiquido=
+                                posterior.salarioLiquido=
                                         listaDeEmpregados[idAnterior].salarioLiquido;
-                            posterior.taxaSindical=
+                                posterior.taxaSindical=
                                         listaDeEmpregados[idAnterior].taxaSindical;
-                            posterior.taxaSindicalExtra=
+                                posterior.taxaSindicalExtra=
                                         listaDeEmpregados[idAnterior].taxaSindicalExtra;
-                            posterior.tipo=listaDeEmpregados[idAnterior].tipo;
-                            //Fim da copia para Redo
-                            //InsiraAqui Modificações para Undo
-                            listaDeEmpregados[idAnterior].comissao=anterior.comissao;
-                            listaDeEmpregados[idAnterior].endereco=anterior.endereco;
-                            listaDeEmpregados[idAnterior].id=anterior.id;
-                            listaDeEmpregados[idAnterior].idSindicato=
+                                posterior.tipo=listaDeEmpregados[idAnterior].tipo;
+                                //Fim da copia para Redo
+                                //InsiraAqui Modificações para Undo
+                                listaDeEmpregados[idAnterior].comissao=anterior.comissao;
+                                listaDeEmpregados[idAnterior].endereco=anterior.endereco;
+                                listaDeEmpregados[idAnterior].id=anterior.id;
+                                listaDeEmpregados[idAnterior].idSindicato=
                                     anterior.idSindicato;
-                            listaDeEmpregados[idAnterior].metodoDePagamento=
+                                listaDeEmpregados[idAnterior].metodoDePagamento=
                                     anterior.metodoDePagamento;
-                            listaDeEmpregados[idAnterior].nome=anterior.nome;
-                            listaDeEmpregados[idAnterior].pertencenteAoSindicato=
+                                listaDeEmpregados[idAnterior].nome=anterior.nome;
+                                listaDeEmpregados[idAnterior].pertencenteAoSindicato=
                                     anterior.pertencenteAoSindicato;
-                            listaDeEmpregados[idAnterior].proximoPagamento=
+                                listaDeEmpregados[idAnterior].proximoPagamento=
                                     anterior.proximoPagamento;
-                            listaDeEmpregados[idAnterior].salarioBruto=anterior.salarioBruto;
-                            listaDeEmpregados[idAnterior].salarioLiquido=anterior.salarioLiquido;
-                            listaDeEmpregados[idAnterior].taxaSindical=anterior.taxaSindical;
-                            listaDeEmpregados[idAnterior].taxaSindicalExtra=anterior.taxaSindicalExtra;
-                            listaDeEmpregados[idAnterior].tipo=anterior.tipo;
-                            //Fim do Undo
+                                listaDeEmpregados[idAnterior].salarioBruto=anterior.salarioBruto;
+                                listaDeEmpregados[idAnterior].salarioLiquido=anterior.salarioLiquido;
+                                listaDeEmpregados[idAnterior].taxaSindical=anterior.taxaSindical;
+                                listaDeEmpregados[idAnterior].taxaSindicalExtra=anterior.taxaSindicalExtra;
+                                listaDeEmpregados[idAnterior].tipo=anterior.tipo;
+                                //Fim do Undo
+                            }else
+                            {
+                                for( int i = 0; i < quantidadeRecebedores; i++ )
+                                {
+                                    //InsiraAqui Modificações para Undo
+                                    listaDeEmpregados[idsAnteriores[i]].comissao=anteriores[i].comissao;
+                                    listaDeEmpregados[idsAnteriores[i]].endereco=anteriores[i].endereco;
+                                    listaDeEmpregados[idsAnteriores[i]].id=anteriores[i].id;
+                                    listaDeEmpregados[idsAnteriores[i]].idSindicato=
+                                        anteriores[i].idSindicato;
+                                    listaDeEmpregados[idsAnteriores[i]].metodoDePagamento=
+                                        anteriores[i].metodoDePagamento;
+                                    listaDeEmpregados[idsAnteriores[i]].nome=anteriores[i].nome;
+                                    listaDeEmpregados[idsAnteriores[i]].pertencenteAoSindicato=
+                                        anteriores[i].pertencenteAoSindicato;
+                                    listaDeEmpregados[idsAnteriores[i]].proximoPagamento=
+                                        anteriores[i].proximoPagamento;
+                                    listaDeEmpregados[idsAnteriores[i]].salarioBruto=anteriores[i].salarioBruto;
+                                    listaDeEmpregados[idsAnteriores[i]].salarioLiquido=anteriores[i].salarioLiquido;
+                                    listaDeEmpregados[idsAnteriores[i]].taxaSindical=anteriores[i].taxaSindical;
+                                    listaDeEmpregados[idsAnteriores[i]].taxaSindicalExtra=anteriores[i].taxaSindicalExtra;
+                                    listaDeEmpregados[idsAnteriores[i]].tipo=anteriores[i].tipo;
+                                    //Fim do Undo
+                                }
+                                for( int i = 0; i < quantidadeRecebedores; i++ )
+                                {
+                                    //InsiraAqui Alterações para Redo
+                                    anteriores[i].salarioLiquido = 0.0;
+                                    anteriores[i].taxaSindicalExtra = 0.0;
+                                    anteriores[i].comissao = 0.0;
+                                    calcularProximoPagamento(anteriores[i]);
+                                }
+                            }
+                            
                             System.out.println("A ultima ação executada foi desfeita");
                             algoFoiDesfeito = true;
                         }else
                         {
-                            //InsiraAqui Modificações para Redo
-                            listaDeEmpregados[idAnterior].comissao=posterior.comissao;
-                            listaDeEmpregados[idAnterior].endereco=posterior.endereco;
-                            listaDeEmpregados[idAnterior].id=posterior.id;
-                            listaDeEmpregados[idAnterior].idSindicato=
+                            if(undoSimples)
+                            {
+                                //InsiraAqui Modificações para Redo
+                                listaDeEmpregados[idAnterior].comissao=posterior.comissao;
+                                listaDeEmpregados[idAnterior].endereco=posterior.endereco;
+                                listaDeEmpregados[idAnterior].id=posterior.id;
+                                listaDeEmpregados[idAnterior].idSindicato=
                                     posterior.idSindicato;
-                            listaDeEmpregados[idAnterior].metodoDePagamento=
+                                listaDeEmpregados[idAnterior].metodoDePagamento=
                                     posterior.metodoDePagamento;
-                            listaDeEmpregados[idAnterior].nome=posterior.nome;
-                            listaDeEmpregados[idAnterior].pertencenteAoSindicato=
+                                listaDeEmpregados[idAnterior].nome=posterior.nome;
+                                listaDeEmpregados[idAnterior].pertencenteAoSindicato=
                                     posterior.pertencenteAoSindicato;
-                            listaDeEmpregados[idAnterior].proximoPagamento=
+                                listaDeEmpregados[idAnterior].proximoPagamento=
                                     posterior.proximoPagamento;
-                            listaDeEmpregados[idAnterior].salarioBruto=posterior.salarioBruto;
-                            listaDeEmpregados[idAnterior].salarioLiquido=posterior.salarioLiquido;
-                            listaDeEmpregados[idAnterior].taxaSindical=posterior.taxaSindical;
-                            listaDeEmpregados[idAnterior].taxaSindicalExtra=posterior.taxaSindicalExtra;
-                            listaDeEmpregados[idAnterior].tipo=posterior.tipo;
-                            //Fim do Redo
+                                listaDeEmpregados[idAnterior].salarioBruto=posterior.salarioBruto;
+                                listaDeEmpregados[idAnterior].salarioLiquido=posterior.salarioLiquido;
+                                listaDeEmpregados[idAnterior].taxaSindical=posterior.taxaSindical;
+                                listaDeEmpregados[idAnterior].taxaSindicalExtra=posterior.taxaSindicalExtra;
+                                listaDeEmpregados[idAnterior].tipo=posterior.tipo;
+                                //Fim do Redo
+                            }else
+                            {
+                                for( int i = 0; i < quantidadeRecebedores; i++ )
+                                {
+                                    //InsiraAqui Modificações para Redo
+                                    listaDeEmpregados[idsAnteriores[i]].comissao=anteriores[i].comissao;
+                                    
+                                    listaDeEmpregados[idsAnteriores[i]].proximoPagamento=
+                                        anteriores[i].proximoPagamento;
+                                    listaDeEmpregados[idsAnteriores[i]].salarioLiquido=anteriores[i].salarioLiquido;
+                                    listaDeEmpregados[idsAnteriores[i]].taxaSindicalExtra=anteriores[i].taxaSindicalExtra;
+                                    //Fim do Redo
+                                }
+                            }
+                            
                             System.out.println("A ultima ação executada foi refeita");
                             algoFoiDesfeito = false;
                         }

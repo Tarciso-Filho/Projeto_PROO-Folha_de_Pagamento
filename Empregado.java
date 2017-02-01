@@ -9,7 +9,7 @@ public class Empregado
     public boolean pertencenteAoSindicato;
     public int id, tipo, metodoDePagamento, idSindicato;
     public Calendar proximoPagamento;
-    public String nome, endereco;
+    public String nome, endereco, agendaPagamento;
     public double salarioBruto, comissao, taxaSindical, taxaSindicalExtra;
     public double salarioLiquido;
     
@@ -20,6 +20,17 @@ public class Empregado
         nome = novoNome;
         endereco = novoEndereco;
         tipo = novoTipo;
+        switch(novoId)
+        {
+            case 1:
+                agendaPagamento = "semanal 1 sexta";
+            break;
+            case 2:
+                agendaPagamento = "mensal $";
+            break;
+            case 3:
+                agendaPagamento = "semanal 2 sexta";
+        }
         salarioBruto = novoSalario;
         comissao = novaComissao;
         id = novoId;
