@@ -122,10 +122,15 @@ public class PrincipalFolhaDePagamento
         boolean sair, estado, algoFoiDesfeito = false, undoSimples = true;
         int opcao, identificador, horaEntrada, minutosEntrada, horaSaida;
         int minutosSaida, horasTrabalhadas, lendoInt, quantidadeRecebedores=0;
-        int idAnterior = -1;
+        int idAnterior = -1, quantidadeAgendas = 3;
         int[] idsAnteriores = new int[10];
         double lendoDouble, valor, porcentagem;
         String lendoString, horaString;
+        String[] agendasDePagamentos = new String[60];
+        
+        agendasDePagamentos[0] = "semanal 1 sexta";
+        agendasDePagamentos[1] = "mensal $";
+        agendasDePagamentos[2] = "semanal 2 sexta";
         
         System.out.println("Folha de Pagamento - TARCISO FILHO");
         
@@ -138,7 +143,7 @@ public class PrincipalFolhaDePagamento
             System.out.println("4-Para lancar um resultado de venda;");
             System.out.println("5-Para lancar uma taxa de servico;");
             System.out.println("6-Para alterar detalhes de um empregado;");
-            System.out.println("7-Para rodar a folha de pagamento para hoje;");
+            System.out.println("7-Para rodar a folha de pagamento;");
             System.out.println("8-Para desfazer ou refazer o ultimo comando;");
             System.out.println("9-Para vizualizar a agenda de pagamento;");
             System.out.println("10-Para criar uma nova agenda de pagamento;");
@@ -247,6 +252,7 @@ public class PrincipalFolhaDePagamento
                             {
                                 //InsiraAqui Alterações para Redo/Undo
                                 idAnterior = i;
+                                anterior.agendaPagamento=listaDeEmpregados[i].agendaPagamento;
                                 anterior.comissao=listaDeEmpregados[i].comissao;
                                 anterior.endereco=listaDeEmpregados[i].endereco;
                                 anterior.id=listaDeEmpregados[i].id;
@@ -298,6 +304,7 @@ public class PrincipalFolhaDePagamento
                         {
                             //InsiraAqui Alterações para Redo/Undo
                             idAnterior = i;
+                            anterior.agendaPagamento=listaDeEmpregados[i].agendaPagamento;
                             anterior.comissao=listaDeEmpregados[i].comissao;
                             anterior.endereco=listaDeEmpregados[i].endereco;
                             anterior.id=listaDeEmpregados[i].id;
@@ -370,6 +377,7 @@ public class PrincipalFolhaDePagamento
                         {
                             //InsiraAqui Alterações para Redo/Undo
                             idAnterior = i;
+                            anterior.agendaPagamento=listaDeEmpregados[i].agendaPagamento;
                             anterior.comissao=listaDeEmpregados[i].comissao;
                             anterior.endereco=listaDeEmpregados[i].endereco;
                             anterior.id=listaDeEmpregados[i].id;
@@ -421,6 +429,7 @@ public class PrincipalFolhaDePagamento
                         {
                             //InsiraAqui Alterações para Redo/Undo
                             idAnterior = i;
+                            anterior.agendaPagamento=listaDeEmpregados[i].agendaPagamento;
                             anterior.comissao=listaDeEmpregados[i].comissao;
                             anterior.endereco=listaDeEmpregados[i].endereco;
                             anterior.id=listaDeEmpregados[i].id;
@@ -461,6 +470,7 @@ public class PrincipalFolhaDePagamento
                 case 6:
                     System.out.println("Informe o ID do funcionario:");
                     identificador = ler.nextInt();
+                    ler.nextLine();//Vazamento Teclado
                     sair = false;
                     for(int i = 0; i<quantidadeEmpregados && !sair; i++)
                     {
@@ -468,6 +478,7 @@ public class PrincipalFolhaDePagamento
                         {
                             //InsiraAqui Alterações para Redo/Undo
                             idAnterior = i;
+                            anterior.agendaPagamento=listaDeEmpregados[i].agendaPagamento;
                             anterior.comissao=listaDeEmpregados[i].comissao;
                             anterior.endereco=listaDeEmpregados[i].endereco;
                             anterior.id=listaDeEmpregados[i].id;
@@ -505,6 +516,14 @@ public class PrincipalFolhaDePagamento
                                     + "\n3-Comissionado\nTipo Atual:" 
                                     + listaDeEmpregados[i].tipo );
                             lendoInt = ler.nextInt();
+                            listaDeEmpregados[i].tipo = lendoInt;
+                            System.out.println("Escolha uma das agendas de pagamento:");
+                            for( int j=0; j<quantidadeAgendas; j++ )
+                            {
+                                System.out.printf("%d - \"%s\"\n", j, agendasDePagamentos[j]);
+                            }
+                            lendoInt = ler.nextInt();
+                            listaDeEmpregados[i].agendaPagamento = agendasDePagamentos[lendoInt];
                             /*switch(lendoInt)
                             {
                                 case 1:
@@ -516,7 +535,7 @@ public class PrincipalFolhaDePagamento
                                 case 3:
                                     listaDeEmpregados[i].diasAtePagamento = 13;
                             }*/
-                            listaDeEmpregados[i].tipo = lendoInt;
+                            //calcularProximoPagamento(listaDeEmpregados[i]);
                             System.out.println("Substitua o salário do funcionário:\n"
                             + "(Se horista, o valor da hora trabalhada\n"
                             + " Se assalariado ou comissionado, o valor mensal)"
@@ -530,6 +549,7 @@ public class PrincipalFolhaDePagamento
                             System.out.print("Valor Atual: R$ " 
                                     + listaDeEmpregados[i].comissao + "\nR$ ");
                             lendoDouble = ler.nextDouble();
+                            ler.nextLine();//Vazamento de teclado
                             listaDeEmpregados[i].comissao = lendoDouble;
                             System.out.println("Substitua o estado de "
                                     + "associação ao sindicato: (S/N)");
@@ -649,7 +669,7 @@ public class PrincipalFolhaDePagamento
                         System.out.println("Não foi possivel realizar essa "
                                 + "opção, pois não existe funcionarios!");
                     }
-                    System.out.println("Devem ser pagos " + quantidadeRecebedores + "funcionario(s).");
+                    System.out.println("Deve(m) ser pago(s) " + quantidadeRecebedores + " funcionario(s).");
                 break;
                 case 8:
                     if( quantidadeEmpregados > 0 )
@@ -799,7 +819,70 @@ public class PrincipalFolhaDePagamento
                     }
                 break;
                 case 10:
-                    
+                    System.out.println("Escolha:\n 1 - Mensal\n 2 - Semanal");
+                    lendoInt = ler.nextInt();
+                    ler.nextLine();//Vazamento de teclas
+                    if( lendoInt == 1 )
+                    {
+                        agendasDePagamentos[quantidadeAgendas] = "mensal ";
+                        System.out.println( "Escolha o dia:\n "
+                                + "(Exemplos: 0-ultimo dia, 1-dia 1, 3-dia 3,...)" );
+                        lendoString = ler.nextLine();
+                        if( lendoString.charAt(0) == '0')
+                        {
+                            agendasDePagamentos[quantidadeAgendas] = 
+                                    agendasDePagamentos[quantidadeAgendas].concat("$");
+                        }else
+                        {
+                            agendasDePagamentos[quantidadeAgendas] = 
+                                    agendasDePagamentos[quantidadeAgendas].concat(lendoString);//Necessita Testes!!!
+                        }
+                    }else
+                    {
+                        agendasDePagamentos[quantidadeAgendas] = "semanal ";
+                        System.out.println( "Escolha a frequência:\n "
+                                + "1-toda semana, 2-a cada duas semanas ou 3-a cada três semanas)" );
+                        lendoString = ler.nextLine();
+                        agendasDePagamentos[quantidadeAgendas] = 
+                                agendasDePagamentos[quantidadeAgendas].concat(lendoString);
+                        System.out.println( "Escolha o dia da semana:\n "
+                                + "(Exemplos: 1-domingo, ..., 6-sexta-feira, 7-sabado)" );
+                        lendoInt = ler.nextInt();
+                        switch( lendoInt )
+                        {
+                            case 1:
+                                agendasDePagamentos[quantidadeAgendas] = 
+                                    agendasDePagamentos[quantidadeAgendas].concat(" domingo");
+                            break;
+                            case 2:
+                                agendasDePagamentos[quantidadeAgendas] = 
+                                    agendasDePagamentos[quantidadeAgendas].concat(" segunda");
+                            break;
+                            case 3:
+                                agendasDePagamentos[quantidadeAgendas] = 
+                                    agendasDePagamentos[quantidadeAgendas].concat(" terça");
+                            break;
+                            case 4:
+                                agendasDePagamentos[quantidadeAgendas] = 
+                                    agendasDePagamentos[quantidadeAgendas].concat(" quarta");
+                            break;
+                            case 5:
+                                agendasDePagamentos[quantidadeAgendas] = 
+                                    agendasDePagamentos[quantidadeAgendas].concat(" quinta");
+                            break;
+                            case 6:
+                                agendasDePagamentos[quantidadeAgendas] = 
+                                    agendasDePagamentos[quantidadeAgendas].concat(" sexta");
+                            break;
+                            case 7:
+                                agendasDePagamentos[quantidadeAgendas] = 
+                                    agendasDePagamentos[quantidadeAgendas].concat(" sabado");
+                            break;
+                            default:
+                        }
+                    }
+                    quantidadeAgendas++;
+                    System.out.println("Nova agenda de pagamento cadastrada!");
                 break;
                 case 0:
                     System.out.println("O programa foi encerrado com sucesso!"
