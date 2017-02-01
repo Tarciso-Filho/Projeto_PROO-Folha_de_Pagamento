@@ -21,4 +21,4 @@ Etapas Concluidas (possuem um ✔️️ após o nome):
 
 09- Agenda de Pagamento ✔️️
 
-10- Criação de Novas Agendas de Pagamento 
+10- Criação de Novas Agendas de Pagamento ✔️️
